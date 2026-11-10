@@ -9,4 +9,5 @@
 - Decompiler ids come from a registry.
 - New file types extend the profile, not the spec.
 - Spec value is namespaced; builders stay lenient.
+- Review pass: optional keys, header end, user build order.
 - Advisory notes for authors.

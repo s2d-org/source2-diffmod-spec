@@ -44,13 +44,13 @@ ol.spec > li { margin-bottom: 1rem; }
 <ol class="spec">
 <li>A DiffMod is a UTF-8 text file with LF line ends.</li>
 <li>Keep one DiffMod per file.</li>
-<li>The header holds zero or more lines at the top of the file. Each header line starts with <code>#</code>.</li>
-<li>The keys are <code>spec</code>, <code>title</code>, <code>game</code>, <code>game-build</code>, and <code>decompiler</code>. Builders ignore unknown <code>#</code> lines. Builders treat them as comments. Compound values use the <code>name/version</code> form.</li>
+<li>The header holds zero or more lines at the top of the file. Each header line starts with <code>#</code>. The header ends at the first line that starts without <code>#</code>.</li>
+<li>The keys are <code>spec</code>, <code>title</code>, <code>game</code>, <code>game-build</code>, and <code>decompiler</code>. Builders ignore unknown <code>#</code> lines. Builders treat them as comments. Compound values use the <code>name/version</code> form. All header keys are optional.</li>
 <li>The <code>spec</code> key holds the spec name and version, for example <code>spec: source2-diffmod/v1</code>. A file without a <code>spec</code> key defaults to <code>source2-diffmod/v1</code>. If you add a header, place <code>spec</code> first.</li>
 <li>The <code>title</code> key holds a short human name. The <code>game</code> key holds the game id, for example <code>deadlock</code>. The <code>game</code> key routes the DiffMod to a profile. Builders with one game ignore it. The <code>game-build</code> key is RECOMMENDED and holds the game build id. The <code>decompiler</code> key is RECOMMENDED and holds a registry id plus a version, for example <code>source2viewer-cli/20.1</code>. Take ids from the <a href="#decompilers">registry</a>.</li>
 <li>The body is a unified diff. Use <code>diff -u</code> form with <code>---</code> and <code>+++</code> lines. The body MUST apply clean with <code>git apply -p1</code>.</li>
-<li>Paths MUST use <code>a/</code> and <code>b/</code> prefixes. Paths MUST stay relative to the VPK root. New files MUST use <code>--- /dev/null</code> plus <code>+++ b/&lt;path&gt;</code>. Version 1 forbids renames. Version 1 forbids deletes. Keep context at three lines. Use LF line ends in hunks.</li>
-<li>Each target path MUST map to a compiled path through the game profile. The Deadlock profile maps <code>.css</code> to <code>.vcss_c</code>. It maps <code>.xml</code> to <code>.vxml_c</code>. It maps <code>.js</code> to <code>.vjs_c</code>. Files with a raw suffix such as <code>.cfg</code> pass through with no compile step. If no map row fits a target, fail the build. Name the suffix in the error.
+<li>Paths MUST use <code>a/</code> and <code>b/</code> prefixes. Paths MUST stay relative to the VPK root. New files MUST use <code>--- /dev/null</code> plus <code>+++ b/&lt;path&gt;</code>. Version 1 forbids renames. Version 1 forbids deletes. Use LF line ends in hunks.</li>
+<li>Each target path MUST map to a compiled path through the game profile. Each profile lists its own map. The next table shows the Deadlock map. Files with a raw suffix such as <code>.cfg</code> pass through with no compile step. If no map row fits a target, fail the build. Name the suffix in the error.
 <table>
 <tr><th>Cleartext suffix</th><th>Compiled suffix</th></tr>
 <tr><td><code>.css</code></td><td><code>.vcss_c</code></td></tr>
@@ -58,8 +58,8 @@ ol.spec > li { margin-bottom: 1rem; }
 <tr><td><code>.js</code></td><td><code>.vjs_c</code></td></tr>
 </table>
 </li>
-<li>Decompile each target from the game VPKs. Apply DiffMods in order. If two DiffMods touch the same hunk, fail the build. Compile each result with the game resourcecompiler. Pack compiled outputs plus raw files into one VPK.</li>
-<li>The builder MUST record the game build ID from <code>steam.inf</code>. The builder MUST record the decompiler name and version. The builder MUST record the spec version. Keep this record in the build log. Builders MUST NOT need the <code>decompiler</code> key to build. Warn on mismatch is RECOMMENDED. Fail on mismatch is allowed but not RECOMMENDED.</li>
+<li>Decompile each target from the game VPKs. Apply DiffMods in the order the user gives. If two DiffMods touch the same hunk, fail the build. Compile each result with the game resourcecompiler. Pack compiled outputs plus raw files into one VPK.</li>
+<li>The builder MUST record the game build ID from <code>steam.inf</code>. The builder MUST record the decompiler id and version. The builder MUST record the spec version. Keep this record in the build log. Builders MUST NOT need the <code>decompiler</code> key to build. Warn on mismatch is RECOMMENDED. Fail on mismatch is allowed but not RECOMMENDED.</li>
 <li>Spec version 1 covers Deadlock. The core stays game neutral. New titles need a profile and a build test. Send profiles as spec pull requests.</li>
 <li>Spec versions use plain integers with a v prefix: v1, v2, v3. Builders warn on unknown spec versions and proceed. A new integer marks a break in form or build acts. Freeze each released version. Never edit a frozen version. If you fix a typo, add an erratum in the changelog.</li>
 </ol>
@@ -73,7 +73,16 @@ ol.spec > li { margin-bottom: 1rem; }
 <section id="advisory">
 <h2>Advisory</h2>
 <p>This section is advisory, not strict.</p>
-<p>Keep hunks small. Small hunks survive game updates. Large ones clash. Prefer style edits over layout edits. Style rules clash less than moved panels. Never ship full game files. Ship diffs alone. Full files hide Valve edits. Name titles plainly. The title key serves mod lists and managers. Name stored DiffMods with the <code>.patch</code> suffix.</p>
+<p>Keep hunks small. Small hunks survive game updates. Large ones clash. Prefer style edits over layout edits. Style rules clash less than moved panels. Never ship full game files. Ship diffs alone. Full files hide Valve edits. Name titles plainly. The title key serves mod lists and managers. Name stored DiffMods with the <code>.patch</code> suffix. Keep three lines of context.</p>
+</section>
+<section id="example">
+<h2>Example</h2>
+<p>A header looks like this:</p>
+<pre><code># spec: source2-diffmod/v1
+# game: deadlock
+# decompiler: source2viewer-cli/20.1
+# title: Always show ability suggestions</code></pre>
+</section>
 <section id="profiles">
 <h2>Profiles</h2>
 <p>Each game needs a profile. The Deadlock profile is reference. Version 1 has no more profiles.</p>
@@ -89,8 +98,8 @@ ol.spec > li { margin-bottom: 1rem; }
 <tr><th>id</th><th>tool</th><th>home</th></tr>
 <tr><td><code>source2viewer-cli</code></td><td>Source2Viewer-CLI</td><td><a href="https://github.com/ValveResourceFormat/Source2Viewer">ValveResourceFormat/Source2Viewer</a></td></tr>
 </table>
-<p>Take the version from the upstream release tag, for example <code>20.1</code>. Quote the tag verbatim.</p>
-<p>Send a pull request that adds one row. Take the first free slug. Never reuse a dead id. Builders MUST NOT fail a build on an unknown id. Log a warning.</p>
+<p>Take the version from the upstream release tag, for example <code>20.1</code>. Quote the tag verbatim. Source2Viewer-CLI reads all Source 2 games. The game list lives at s2v.app.</p>
+<p>Send a pull request that adds one row. Take the first free slug. Never reuse a dead id. Add a SPEC-CHANGELOG.md line. Builders MUST NOT fail a build on an unknown id. Log a warning.</p>
 </section>
 <section id="faq">
 <h2>FAQ</h2>

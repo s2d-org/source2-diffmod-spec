@@ -14,7 +14,14 @@ Read the game build id from `citadel/steam.inf` keys `VersionDate` and `VersionT
 
 ## Suffix map
 
-The suffix map matches spec rule 9.
+The map has three rows.
+
+| Cleartext suffix | Compiled suffix |
+| --- | --- |
+| `.css` | `.vcss_c` |
+| `.xml` | `.vxml_c` |
+| `.js` | `.vjs_c` |
+
 Raw suffixes are `.cfg`.
 
 ## Decompile

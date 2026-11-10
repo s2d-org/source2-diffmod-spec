@@ -14,7 +14,7 @@ Point at public tool sources.
 Point at a tagged release with decompile tests.
 Take the first free slug.
 Never reuse a dead id.
-Add a changelog line.
+Add a SPEC-CHANGELOG.md line.
 
 Builders MUST NOT fail a build on an unknown id.
 Log a warning.
@@ -27,5 +27,5 @@ Log a warning.
 
 Take the version from the upstream release tag, for example `20.1`.
 Quote the tag verbatim.
-It reads all Source 2 games.
+Source2Viewer-CLI reads all Source 2 games.
 The game list lives at s2v.app.
