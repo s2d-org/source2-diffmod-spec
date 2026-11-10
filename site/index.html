@@ -49,7 +49,7 @@ ol.spec > li { margin-bottom: 1rem; }
 <li>The <code>title</code> key holds a short human name. The <code>game</code> key holds the game id, for example <code>deadlock</code>. The <code>game-build</code> key is RECOMMENDED and holds the game build id. The <code>decompiler</code> key is RECOMMENDED and holds a registry id plus a version, for example <code>source2viewer-cli 20.1</code>. Take ids from the <a href="#decompilers">registry</a>.</li>
 <li>The body is a unified diff. Use <code>diff -u</code> form with <code>---</code> and <code>+++</code> lines. The body MUST apply clean with <code>git apply -p1</code>.</li>
 <li>Paths MUST use <code>a/</code> and <code>b/</code> prefixes. Paths MUST stay relative to the VPK root. New files MUST use <code>--- /dev/null</code> plus <code>+++ b/&lt;path&gt;</code>. Version 1 forbids renames. Version 1 forbids deletes. Keep context at three lines. Use LF line ends in hunks.</li>
-<li>Each target path MUST map to a compiled path through the game profile. The Deadlock profile maps <code>.css</code> to <code>.vcss_c</code>. It maps <code>.xml</code> to <code>.vxml_c</code>. It maps <code>.js</code> to <code>.vjs_c</code>. Files with a raw suffix such as <code>.cfg</code> pass through with no compile step.
+<li>Each target path MUST map to a compiled path through the game profile. The Deadlock profile maps <code>.css</code> to <code>.vcss_c</code>. It maps <code>.xml</code> to <code>.vxml_c</code>. It maps <code>.js</code> to <code>.vjs_c</code>. Files with a raw suffix such as <code>.cfg</code> pass through with no compile step. If no map row fits a target, fail the build. Name the suffix in the error.
 <table>
 <tr><th>Cleartext suffix</th><th>Compiled suffix</th></tr>
 <tr><td><code>.css</code></td><td><code>.vcss_c</code></td></tr>
@@ -105,6 +105,8 @@ ol.spec > li { margin-bottom: 1rem; }
 <p>Send a pull request that adds one registry row. Take the first free slug. The id maps to one tool and one release line.</p>
 <h3>Does a new decompiler need a new spec version?</h3>
 <p>No. New rows extend the registry, not the form. Old files still validate, so the version stays.</p>
+<h3>Does a new file type need a new spec version?</h3>
+<p>No. New suffixes extend the profile, not the form. Prove a full round trip first: decompile, edit, compile, load. Send the map row as a profile pull request.</p>
 </section>
 </main>
 <footer>
