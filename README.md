@@ -1,5 +1,7 @@
 # sv2-diffmod-spec
 
+A DiffMod holds plain diffs over decompiled sources.
+
 This repo holds the SV2 DiffMod spec and game profiles.
 Spec text is canonical in `spec/`.
 The site mirrors the spec for reads.
