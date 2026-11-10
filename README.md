@@ -13,7 +13,8 @@ spec/v1.md          # core spec, frozen per major version
 profiles/deadlock.md  # reference profile, v1 scope
 decompilers.md       # decompiler id registry
 SPEC-CHANGELOG.md
-site/index.html     # plain HTML, served at source2-diffmod.org
+site/index.html     # landing, served at source2-diffmod.org
+site/spec/index.html  # spec, served at source2-diffmod.org/spec
 ```
 
 ## Edit
@@ -25,5 +26,6 @@ Freeze each release with a tag such as `v1`.
 ## Serve
 
 Deploy `site/` to `source2-diffmod.org`.
+The spec page lives at `/spec`.
 Pages deploys `site/` on push to `main`.
 Fix the repo URL in `site/index.html` after first push.

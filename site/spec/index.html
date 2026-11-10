@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Source 2 DiffMod Spec</title>
+<style>
+body { max-width: 44rem; margin: 2rem auto; padding: 0 1rem; font: 1rem/1.6 system-ui, sans-serif; color: #1a1a1a; }
+header { border-bottom: 2px solid #1a1a1a; margin-bottom: 1.5rem; }
+nav a { margin-right: 1rem; }
+pre { background: #f4f4f4; padding: 1rem; overflow-x: auto; }
+code { background: #f4f4f4; padding: 0 .25rem; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid #999; padding: .25rem .75rem; }
+footer { border-top: 1px solid #999; margin-top: 2rem; padding-top: 1rem; font-size: .9rem; }
+.tagline { font-size: 1.2rem; font-weight: 600; }
+ol.spec > li { margin-bottom: 1rem; }
+</style>
+</head>
+<body>
+<header>
+<h1>Source 2 DiffMod Spec</h1>
+<p class="tagline">A DiffMod holds plain diffs over decompiled sources.</p>
+<p>Status is draft. Spec version is 1.</p>
+<nav>
+<a href="#introduction">Introduction</a>
+<a href="#specification">Specification</a>
+<a href="#advisory">Advisory</a>
+<a href="#profiles">Profiles</a>
+<a href="#decompilers">Decompilers</a>
+<a href="#faq">FAQ</a>
+</nav>
+</header>
+<main>
+<section id="introduction">
+<h2>Introduction</h2>
+<p>Source 2 mods ship as VPK packs with compiled sources. A VPK hides what it edits. Two VPKs that touch one file clash, and the last load wins. Each game update breaks VPKs, and authors must reissue each pack by hand.</p>
+<p>A DiffMod holds plain diffs over decompiled sources. A diff shows what it edits. Builders merge DiffMods at build time and flag clashes with text conflicts. A DiffMod often still applies after a game update, since a rebuild runs it past fresh sources. If it fails, the diff marks the exact spot that needs care.</p>
+</section>
+<section id="specification">
+<h2>Specification</h2>
+<p>The key words "MUST", "MUST NOT", and "RECOMMENDED" in this text state strict rules.</p>
+<ol class="spec">
+<li>A DiffMod is a UTF-8 text file with LF line ends.</li>
+<li>Name DiffMod files with the <code>.patch</code> suffix. Keep one DiffMod per file.</li>
+<li>The header holds zero or more lines at the top of the file. Each header line starts with <code>#</code>.</li>
+<li>The keys are <code>spec</code>, <code>title</code>, <code>game</code>, <code>game-build</code>, and <code>decompiler</code>. Builders ignore unknown <code>#</code> lines. Builders treat them as comments.</li>
+<li>The <code>spec</code> key holds the spec version, for example <code>spec: 1</code>. A file without a <code>spec</code> key defaults to version 1. If you add a header, place <code>spec</code> first.</li>
+<li>The <code>title</code> key holds a short human name. The <code>game</code> key holds the game id, for example <code>deadlock</code>. The <code>game-build</code> key is RECOMMENDED and holds the game build id. The <code>decompiler</code> key is RECOMMENDED and holds a registry id plus a version, for example <code>source2viewer-cli 20.1</code>. Take ids from the <a href="#decompilers">registry</a>.</li>
+<li>The body is a unified diff. Use <code>diff -u</code> form with <code>---</code> and <code>+++</code> lines. The body MUST apply clean with <code>git apply -p1</code>.</li>
+<li>Paths MUST use <code>a/</code> and <code>b/</code> prefixes. Paths MUST stay relative to the VPK root. New files MUST use <code>--- /dev/null</code> plus <code>+++ b/&lt;path&gt;</code>. Version 1 forbids renames. Version 1 forbids deletes. Keep context at three lines. Use LF line ends in hunks.</li>
+<li>Each target path MUST map to a compiled path through the game profile. The Deadlock profile maps <code>.css</code> to <code>.vcss_c</code>. It maps <code>.xml</code> to <code>.vxml_c</code>. It maps <code>.js</code> to <code>.vjs_c</code>. Files with a raw suffix such as <code>.cfg</code> pass through with no compile step. If no map row fits a target, fail the build. Name the suffix in the error.
+<table>
+<tr><th>Cleartext suffix</th><th>Compiled suffix</th></tr>
+<tr><td><code>.css</code></td><td><code>.vcss_c</code></td></tr>
+<tr><td><code>.xml</code></td><td><code>.vxml_c</code></td></tr>
+<tr><td><code>.js</code></td><td><code>.vjs_c</code></td></tr>
+</table>
+</li>
+<li>Decompile each target from the game VPKs. Apply DiffMods in order. If two DiffMods touch the same hunk, fail the build. Compile each result with the game resourcecompiler. Pack compiled outputs plus raw files into one VPK.</li>
+<li>The builder MUST record the game build ID from <code>steam.inf</code>. The builder MUST record the decompiler name and version. The builder MUST record the spec version. Keep this record in the build log.</li>
+<li>Spec version 1 covers Deadlock. The core stays game neutral. New titles need a profile and a build test. Send profiles as spec pull requests.</li>
+<li>Spec versions use plain integers: 1, 2, 3. A new integer marks a break in form or build acts. Freeze each released version. Never edit a frozen version. If you fix a typo, add an erratum in the changelog.</li>
+</ol>
+<pre><code># spec: 1
+# game: deadlock
+# decompiler: source2viewer-cli 20.1
+# title: Always show ability suggestions
+--- a/panorama/styles/hud_ability_icon.css
++++ b/panorama/styles/hud_ability_icon.css</code></pre>
+</section>
+<section id="advisory">
+<h2>Advisory</h2>
+<p>This section is advisory, not strict.</p>
+<p>Keep hunks small. Small hunks survive game updates. Large ones clash. Prefer style edits over layout edits. Style rules clash less than moved panels. Never ship full game files. Ship diffs alone. Full files hide Valve edits. Name titles plainly. The title key serves mod lists and managers.</p>
+<section id="profiles">
+<h2>Profiles</h2>
+<p>Each game needs a profile. The Deadlock profile is reference. Version 1 has no more profiles.</p>
+<ul>
+<li><a href="https://github.com/rszyma/source2-diffmod-spec/blob/main/profiles/deadlock.md">Deadlock profile</a> (reference)</li>
+</ul>
+<p>A new profile needs VPK paths, a suffix map, and a green build test.</p>
+</section>
+<section id="decompilers">
+<h2>Decompilers</h2>
+<p>Each decompiler has a short id. The id maps to one tool and one release line. Same id plus same version MUST give byte-identical cleartext for same VPK input.</p>
+<table>
+<tr><th>id</th><th>tool</th><th>home</th></tr>
+<tr><td><code>source2viewer-cli</code></td><td>Source2Viewer-CLI</td><td><a href="https://github.com/ValveResourceFormat/Source2Viewer">ValveResourceFormat/Source2Viewer</a></td></tr>
+</table>
+<p>Take the version from the upstream release tag, for example <code>20.1</code>.</p>
+<p>Send a pull request that adds one row. Take the first free slug. Never reuse a dead id. Builders MUST NOT fail a build on an unknown id. Log a warning.</p>
+</section>
+<section id="faq">
+<h2>FAQ</h2>
+<h3>Why diffs and not full files?</h3>
+<p>Full files hide Valve edits and clash on each shared file. Diffs show edits and merge.</p>
+<h3>Does one DiffMod cover many files?</h3>
+<p>Yes. One DiffMod holds edits to any count of targets.</p>
+<h3>What if a DiffMod fails to apply?</h3>
+<p>Re-derive it from fresh sources. The old diff shows the prior intent.</p>
+<h3>Why the <code>.patch</code> suffix?</h3>
+<p>Diff tools and builders read it with no extra setup.</p>
+<h3>What about CS2 or Dota 2?</h3>
+<p>Version 1 covers Deadlock alone. The core fits more titles with Panorama sources in VPKs. Each new title needs a profile and a build test.</p>
+<h3>Why pin the decompiler?</h3>
+<p>Decompile output shifts with the decompiler release. A pinned version keeps builds repeatable.</p>
+<h3>How do new decompiler names get issued?</h3>
+<p>Send a pull request that adds one registry row. Take the first free slug. The id maps to one tool and one release line.</p>
+<h3>Does a new decompiler need a new spec version?</h3>
+<p>No. New rows extend the registry, not the form. Old files still validate, so the version stays.</p>
+<h3>Does a new file type need a new spec version?</h3>
+<p>No. New suffixes extend the profile, not the form. Prove a full round trip first: decompile, edit, compile, load. Send the map row as a profile pull request.</p>
+</section>
+</main>
+<footer>
+<p>Canonical text is <code>spec/v1.md</code> in the repo.</p>
+<p><a href="https://github.com/rszyma/source2-diffmod-spec">github.com/rszyma/source2-diffmod-spec</a></p>
+</footer>
+</body>
+</html>
