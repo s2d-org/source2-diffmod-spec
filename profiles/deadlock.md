@@ -3,8 +3,9 @@
 Status is reference.
 Game id is `deadlock`.
 Steam app id is `1422450`.
+This profile covers spec version 1.
 
-## Sources
+## Game files
 
 Game files live under `.../common/Deadlock/game`.
 Decompile targets from `citadel/pak01_dir.vpk`.
@@ -13,17 +14,30 @@ Read the game build id from `citadel/steam.inf` keys `VersionDate` and `VersionT
 
 ## Suffix map
 
-The suffix map matches spec section 5.
+The suffix map matches spec rule 9.
 Raw suffixes are `.cfg`.
 
-## Compile
+## Decompile
 
-Take `panorama_config.txt` from the CSDK.
-Run the compiler with the game dir as cwd.
-Place outputs under an addon dir such as `citadel_addons/badge`.
-
-Example decompile:
+Decompile with Source2Viewer-CLI in decompile mode.
+Pin the decompiler per spec rule 11.
 
 ```sh
 Source2Viewer-CLI -i citadel/pak01_dir.vpk -d -o /tmp/fresh -f panorama/styles/hud.vcss_c
 ```
+
+## Compile
+
+Take `panorama_config.txt` from the CSDK.
+Run the CSDK resourcecompiler from the game dir.
+Place outputs under an addon dir such as `citadel_addons/badge`.
+Example VPK name: `pak75_dir.vpk`.
+
+```sh
+deadlock-resourcecompiler -v -f -game "Z:\modroot\game\citadel" "Z:\modroot\content\citadel_addons\badge\panorama\layout\hud.xml"
+```
+
+## First builder
+
+Modbox is the first builder for this profile.
+Its repo lives at https://github.com/rszyma/deadlock-modbox.

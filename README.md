@@ -10,9 +10,7 @@ The site mirrors the spec for reads.
 
 ```text
 spec/v1.md          # core spec, frozen per major version
-profiles/deadlock.md
-profiles/cs2.md     # draft
-profiles/dota2.md   # draft
+profiles/deadlock.md  # reference profile, v1 scope
 SPEC-CHANGELOG.md
 site/index.html     # plain HTML, served at sv2-diffmod.org/spec
 ```

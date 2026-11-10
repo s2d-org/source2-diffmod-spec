@@ -4,5 +4,5 @@
 
 - Core spec version 1 is draft.
 - Deadlock profile is reference.
-- CS2 profile is draft and needs a build test.
-- Dota 2 profile is draft and needs a build test.
+- Version 1 covers Deadlock alone.
+- More profiles wait for a path map and a green build test.

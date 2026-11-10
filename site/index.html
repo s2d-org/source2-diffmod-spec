@@ -58,7 +58,7 @@ ol.spec > li { margin-bottom: 1rem; }
 </li>
 <li>Decompile each target from the game VPKs. Apply DiffMods in order. If two DiffMods touch the same hunk, fail the build. Compile each result with the game resourcecompiler. Pack compiled outputs plus raw files into one VPK.</li>
 <li>The builder MUST record the game build ID from <code>steam.inf</code>. The builder MUST record the decompiler name and version. The builder MUST record the spec version. Keep this record in the build log.</li>
-<li>Each game needs a profile. A profile lists VPK search order, suffix map, raw suffixes, and compiler notes. Deadlock is the reference profile. Other titles stay draft until a build test passes.</li>
+<li>Spec version 1 covers Deadlock. The core stays game neutral. New titles need a profile and a build test. Send profiles as spec pull requests.</li>
 <li>Spec versions use plain integers: 1, 2, 3. A new integer marks a break in form or build acts. Freeze each released version. Never edit a frozen version. If you fix a typo, add an erratum in the changelog.</li>
 </ol>
 <pre><code># spec: 1
@@ -70,12 +70,11 @@ ol.spec > li { margin-bottom: 1rem; }
 </section>
 <section id="profiles">
 <h2>Profiles</h2>
-<p>Each game needs a profile. Deadlock is the reference profile. Other titles stay draft until a build test passes.</p>
+<p>Each game needs a profile. The Deadlock profile is reference. Version 1 has no more profiles.</p>
 <ul>
 <li><a href="https://github.com/rszyma/sv2-diffmod-spec/blob/main/profiles/deadlock.md">Deadlock profile</a> (reference)</li>
-<li><a href="https://github.com/rszyma/sv2-diffmod-spec/blob/main/profiles/cs2.md">CS2 profile</a> (draft)</li>
-<li><a href="https://github.com/rszyma/sv2-diffmod-spec/blob/main/profiles/dota2.md">Dota 2 profile</a> (draft)</li>
 </ul>
+<p>A new profile needs VPK paths, a suffix map, and a green build test.</p>
 </section>
 <section id="faq">
 <h2>FAQ</h2>
@@ -87,8 +86,8 @@ ol.spec > li { margin-bottom: 1rem; }
 <p>Re-derive it from fresh sources. The old diff shows the prior intent.</p>
 <h3>Why the <code>.patch</code> suffix?</h3>
 <p>Diff tools and builders read it with no extra setup.</p>
-<h3>Does the spec fit CS2 or Dota 2?</h3>
-<p>The core fits each Source 2 title with Panorama sources in VPKs. Each title needs a profile and a build test.</p>
+<h3>What about CS2 or Dota 2?</h3>
+<p>Version 1 covers Deadlock alone. The core fits more titles with Panorama sources in VPKs. Each new title needs a profile and a build test.</p>
 <h3>Why pin the decompiler?</h3>
 <p>Decompile output shifts with the decompiler release. A pinned version keeps builds repeatable.</p>
 </section>
