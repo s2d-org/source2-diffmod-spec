@@ -37,7 +37,7 @@ Example VPK name: `pak75_dir.vpk`.
 deadlock-resourcecompiler -v -f -game "Z:\modroot\game\citadel" "Z:\modroot\content\citadel_addons\badge\panorama\layout\hud.xml"
 ```
 
-## First builder
+## Reference implementation
 
-Modbox is the first builder for this profile.
+Modbox is the reference implementation for this profile.
 Its repo lives at https://github.com/rszyma/deadlock-modbox.

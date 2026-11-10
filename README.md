@@ -6,6 +6,12 @@ This repo holds the Source 2 DiffMod spec and game profiles.
 Spec text is canonical in `spec/`.
 The site mirrors the spec for reads.
 
+## Reference implementation
+
+Modbox is the reference implementation.
+It lives at https://github.com/rszyma/deadlock-modbox.
+Its mods hold example DiffMods.
+
 ## Tree
 
 ```text
@@ -28,4 +34,3 @@ Freeze each release with a tag such as `v1`.
 Deploy `site/` to `source2-diffmod.org`.
 The spec page lives at `/spec`.
 Pages deploys `site/` on push to `main`.
-Fix the repo URL in `site/index.html` after first push.
