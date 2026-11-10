@@ -45,9 +45,9 @@ ol.spec > li { margin-bottom: 1rem; }
 <li>A DiffMod is a UTF-8 text file with LF line ends.</li>
 <li>Keep one DiffMod per file.</li>
 <li>The header holds zero or more lines at the top of the file. Each header line starts with <code>#</code>.</li>
-<li>The keys are <code>spec</code>, <code>title</code>, <code>game</code>, <code>game-build</code>, and <code>decompiler</code>. Builders ignore unknown <code>#</code> lines. Builders treat them as comments.</li>
+<li>The keys are <code>spec</code>, <code>title</code>, <code>game</code>, <code>game-build</code>, and <code>decompiler</code>. Builders ignore unknown <code>#</code> lines. Builders treat them as comments. Compound values use the <code>name/version</code> form.</li>
 <li>The <code>spec</code> key holds the spec name and version, for example <code>spec: source2-diffmod/v1</code>. A file without a <code>spec</code> key defaults to <code>source2-diffmod/v1</code>. If you add a header, place <code>spec</code> first.</li>
-<li>The <code>title</code> key holds a short human name. The <code>game</code> key holds the game id, for example <code>deadlock</code>. The <code>game</code> key routes the DiffMod to a profile. Builders with one game ignore it. The <code>game-build</code> key is RECOMMENDED and holds the game build id. The <code>decompiler</code> key is RECOMMENDED and holds a registry id plus a version, for example <code>source2viewer-cli 20.1</code>. Take ids from the <a href="#decompilers">registry</a>.</li>
+<li>The <code>title</code> key holds a short human name. The <code>game</code> key holds the game id, for example <code>deadlock</code>. The <code>game</code> key routes the DiffMod to a profile. Builders with one game ignore it. The <code>game-build</code> key is RECOMMENDED and holds the game build id. The <code>decompiler</code> key is RECOMMENDED and holds a registry id plus a version, for example <code>source2viewer-cli/20.1</code>. Take ids from the <a href="#decompilers">registry</a>.</li>
 <li>The body is a unified diff. Use <code>diff -u</code> form with <code>---</code> and <code>+++</code> lines. The body MUST apply clean with <code>git apply -p1</code>.</li>
 <li>Paths MUST use <code>a/</code> and <code>b/</code> prefixes. Paths MUST stay relative to the VPK root. New files MUST use <code>--- /dev/null</code> plus <code>+++ b/&lt;path&gt;</code>. Version 1 forbids renames. Version 1 forbids deletes. Keep context at three lines. Use LF line ends in hunks.</li>
 <li>Each target path MUST map to a compiled path through the game profile. The Deadlock profile maps <code>.css</code> to <code>.vcss_c</code>. It maps <code>.xml</code> to <code>.vxml_c</code>. It maps <code>.js</code> to <code>.vjs_c</code>. Files with a raw suffix such as <code>.cfg</code> pass through with no compile step. If no map row fits a target, fail the build. Name the suffix in the error.
@@ -65,7 +65,7 @@ ol.spec > li { margin-bottom: 1rem; }
 </ol>
 <pre><code># spec: source2-diffmod/v1
 # game: deadlock
-# decompiler: source2viewer-cli 20.1
+# decompiler: source2viewer-cli/20.1
 # title: Always show ability suggestions
 --- a/panorama/styles/hud_ability_icon.css
 +++ b/panorama/styles/hud_ability_icon.css</code></pre>
