@@ -11,6 +11,7 @@ The site mirrors the spec for reads.
 ```text
 spec/v1.md          # core spec, frozen per major version
 profiles/deadlock.md  # reference profile, v1 scope
+decompilers.md       # decompiler id registry
 SPEC-CHANGELOG.md
 site/index.html     # plain HTML, served at sv2-diffmod.org/spec
 ```

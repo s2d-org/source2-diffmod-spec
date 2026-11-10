@@ -27,6 +27,7 @@ ol.spec > li { margin-bottom: 1rem; }
 <a href="#introduction">Introduction</a>
 <a href="#specification">Specification</a>
 <a href="#profiles">Profiles</a>
+<a href="#decompilers">Decompilers</a>
 <a href="#faq">FAQ</a>
 </nav>
 </header>
@@ -45,7 +46,7 @@ ol.spec > li { margin-bottom: 1rem; }
 <li>The header holds zero or more lines at the top of the file. Each header line starts with <code>#</code>.</li>
 <li>The keys are <code>spec</code>, <code>title</code>, <code>game</code>, <code>game-build</code>, and <code>decompiler</code>. Builders ignore unknown <code>#</code> lines. Builders treat them as comments.</li>
 <li>The <code>spec</code> key holds the spec version, for example <code>spec: 1</code>. A file without a <code>spec</code> key defaults to version 1. If you add a header, place <code>spec</code> first.</li>
-<li>The <code>title</code> key holds a short human name. The <code>game</code> key holds the game id, for example <code>deadlock</code>. The <code>game-build</code> key is RECOMMENDED and holds the game build id. The <code>decompiler</code> key is RECOMMENDED and holds the decompiler name and version, for example <code>source2viewer-cli 20.1</code>.</li>
+<li>The <code>title</code> key holds a short human name. The <code>game</code> key holds the game id, for example <code>deadlock</code>. The <code>game-build</code> key is RECOMMENDED and holds the game build id. The <code>decompiler</code> key is RECOMMENDED and holds a registry id plus a version, for example <code>source2viewer-cli 20.1</code>. Take ids from the <a href="#decompilers">registry</a>.</li>
 <li>The body is a unified diff. Use <code>diff -u</code> form with <code>---</code> and <code>+++</code> lines. The body MUST apply clean with <code>git apply -p1</code>.</li>
 <li>Paths MUST use <code>a/</code> and <code>b/</code> prefixes. Paths MUST stay relative to the VPK root. New files MUST use <code>--- /dev/null</code> plus <code>+++ b/&lt;path&gt;</code>. Version 1 forbids renames. Version 1 forbids deletes. Keep context at three lines. Use LF line ends in hunks.</li>
 <li>Each target path MUST map to a compiled path through the game profile. The Deadlock profile maps <code>.css</code> to <code>.vcss_c</code>. It maps <code>.xml</code> to <code>.vxml_c</code>. It maps <code>.js</code> to <code>.vjs_c</code>. Files with a raw suffix such as <code>.cfg</code> pass through with no compile step.
@@ -76,6 +77,16 @@ ol.spec > li { margin-bottom: 1rem; }
 </ul>
 <p>A new profile needs VPK paths, a suffix map, and a green build test.</p>
 </section>
+<section id="decompilers">
+<h2>Decompilers</h2>
+<p>Each decompiler has a short id. The id maps to one tool and one release line. Same id plus same version MUST give byte-identical cleartext for same VPK input.</p>
+<table>
+<tr><th>id</th><th>tool</th><th>home</th></tr>
+<tr><td><code>source2viewer-cli</code></td><td>Source2Viewer-CLI</td><td><a href="https://github.com/ValveResourceFormat/Source2Viewer">ValveResourceFormat/Source2Viewer</a></td></tr>
+</table>
+<p>Take the version from the upstream release tag, for example <code>20.1</code>.</p>
+<p>Send a pull request that adds one row. Take the first free slug. Never reuse a dead id.</p>
+</section>
 <section id="faq">
 <h2>FAQ</h2>
 <h3>Why diffs and not full files?</h3>
@@ -90,6 +101,8 @@ ol.spec > li { margin-bottom: 1rem; }
 <p>Version 1 covers Deadlock alone. The core fits more titles with Panorama sources in VPKs. Each new title needs a profile and a build test.</p>
 <h3>Why pin the decompiler?</h3>
 <p>Decompile output shifts with the decompiler release. A pinned version keeps builds repeatable.</p>
+<h3>How do new decompiler names get issued?</h3>
+<p>Send a pull request that adds one registry row. Take the first free slug. The id maps to one tool and one release line.</p>
 </section>
 </main>
 <footer>
