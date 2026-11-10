@@ -14,6 +14,10 @@ Point at public tool sources.
 Point at a tagged release with decompile tests.
 Take the first free slug.
 Never reuse a dead id.
+Add a changelog line.
+
+Builders MUST NOT fail a build on an unknown id.
+Log a warning.
 
 ## Table
 

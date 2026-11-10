@@ -85,7 +85,7 @@ ol.spec > li { margin-bottom: 1rem; }
 <tr><td><code>source2viewer-cli</code></td><td>Source2Viewer-CLI</td><td><a href="https://github.com/ValveResourceFormat/Source2Viewer">ValveResourceFormat/Source2Viewer</a></td></tr>
 </table>
 <p>Take the version from the upstream release tag, for example <code>20.1</code>.</p>
-<p>Send a pull request that adds one row. Take the first free slug. Never reuse a dead id.</p>
+<p>Send a pull request that adds one row. Take the first free slug. Never reuse a dead id. Builders MUST NOT fail a build on an unknown id. Log a warning.</p>
 </section>
 <section id="faq">
 <h2>FAQ</h2>
@@ -103,6 +103,8 @@ ol.spec > li { margin-bottom: 1rem; }
 <p>Decompile output shifts with the decompiler release. A pinned version keeps builds repeatable.</p>
 <h3>How do new decompiler names get issued?</h3>
 <p>Send a pull request that adds one registry row. Take the first free slug. The id maps to one tool and one release line.</p>
+<h3>Does a new decompiler need a new spec version?</h3>
+<p>No. New rows extend the registry, not the form. Old files still validate, so the version stays.</p>
 </section>
 </main>
 <footer>
