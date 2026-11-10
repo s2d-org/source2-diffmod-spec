@@ -26,3 +26,5 @@ Log a warning.
 | `source2viewer-cli` | Source2Viewer-CLI | https://github.com/ValveResourceFormat/Source2Viewer |
 
 Take the version from the upstream release tag, for example `20.1`.
+It reads all Source 2 games.
+The game list lives at s2v.app.
