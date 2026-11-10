@@ -8,3 +8,4 @@
 - More profiles wait for a path map and a green build test.
 - Decompiler ids come from a registry.
 - New file types extend the profile, not the spec.
+- Advisory notes for authors.
