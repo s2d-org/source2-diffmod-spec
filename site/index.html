@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SV2 DiffMod Spec</title>
+<style>
+body { max-width: 44rem; margin: 2rem auto; padding: 0 1rem; font: 1rem/1.6 system-ui, sans-serif; color: #1a1a1a; }
+header { border-bottom: 2px solid #1a1a1a; margin-bottom: 1.5rem; }
+nav a { margin-right: 1rem; }
+pre { background: #f4f4f4; padding: 1rem; overflow-x: auto; }
+code { background: #f4f4f4; padding: 0 .25rem; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid #999; padding: .25rem .75rem; }
+footer { border-top: 1px solid #999; margin-top: 2rem; padding-top: 1rem; font-size: .9rem; }
+</style>
+</head>
+<body>
+<header>
+<h1>SV2 DiffMod Spec</h1>
+<p>Status is draft. Spec version is 1.</p>
+<nav>
+<a href="#what">What</a>
+<a href="#file">File</a>
+<a href="#header">Header</a>
+<a href="#body">Body</a>
+<a href="#build">Build</a>
+<a href="#profiles">Profiles</a>
+</nav>
+</header>
+<main>
+<section id="what">
+<h2>What it is</h2>
+<p>This spec defines the DiffMod form for Source 2 Panorama changes.</p>
+<p>A DiffMod edits decompiled game sources.</p>
+<p>A builder turns a DiffMod into a VPK.</p>
+<p>Authors merge DiffMods with plain diff tools.</p>
+</section>
+<section id="file">
+<h2>File form</h2>
+<p>A DiffMod is a UTF-8 text file with LF line ends.</p>
+<p>Name DiffMod files with the <code>.patch</code> suffix.</p>
+<p>Keep one DiffMod per file.</p>
+</section>
+<section id="header">
+<h2>Header</h2>
+<p>The header holds zero or more lines at the top of the file.</p>
+<p>Each header line starts with <code>#</code>.</p>
+<p>The keys are <code>spec</code>, <code>title</code>, <code>game</code>, <code>game-build</code>, and <code>decompiler</code>.</p>
+<p>Builders ignore unknown <code>#</code> lines.</p>
+<p>Builders treat them as comments.</p>
+<pre><code># spec: 1
+# game: deadlock
+# decompiler: source2viewer-cli 20.1
+# title: Always show ability suggestions
+--- a/panorama/styles/hud_ability_icon.css
++++ b/panorama/styles/hud_ability_icon.css</code></pre>
+</section>
+<section id="body">
+<h2>Body</h2>
+<p>The body is a unified diff.</p>
+<p>The body MUST apply clean with <code>git apply -p1</code>.</p>
+<p>Paths MUST use <code>a/</code> and <code>b/</code> prefixes.</p>
+<p>Paths MUST stay relative to the VPK root.</p>
+<p>New files MUST use <code>--- /dev/null</code> plus <code>+++ b/&lt;path&gt;</code>.</p>
+<p>Version 1 forbids renames.</p>
+<p>Version 1 forbids deletes.</p>
+</section>
+<section id="build">
+<h2>Build</h2>
+<p>Decompile each target from the game VPKs.</p>
+<p>Apply DiffMods in order.</p>
+<p>If two DiffMods touch the same hunk, fail the build.</p>
+<p>Compile each result with the game resourcecompiler.</p>
+<p>Pack compiled outputs plus raw files into one VPK.</p>
+<p>The builder MUST record the game build ID from <code>steam.inf</code>.</p>
+<p>The builder MUST record the decompiler name and version.</p>
+<p>The builder MUST record the spec version.</p>
+</section>
+<section id="profiles">
+<h2>Profiles</h2>
+<p>Each game needs a profile.</p>
+<p>Deadlock is the reference profile.</p>
+<p>Other titles stay draft until a build test passes.</p>
+<table>
+<tr><th>Cleartext suffix</th><th>Compiled suffix</th></tr>
+<tr><td><code>.css</code></td><td><code>.vcss_c</code></td></tr>
+<tr><td><code>.xml</code></td><td><code>.vxml_c</code></td></tr>
+<tr><td><code>.js</code></td><td><code>.vjs_c</code></td></tr>
+</table>
+</section>
+</main>
+<footer>
+<p>Canonical text is <code>spec/v1.md</code> in the repo.</p>
+<p><a href="https://github.com/rszyma/sv2-diffmod-spec">github.com/rszyma/sv2-diffmod-spec</a></p>
+</footer>
+</body>
+</html>
